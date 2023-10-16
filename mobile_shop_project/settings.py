@@ -41,7 +41,8 @@ INSTALLED_APPS = [
 
 CUSTOM_APPS = [
     'apps.customer',
-    'apps.settings'
+    'apps.settings',
+    'apps.master'
 ]
 
 INSTALLED_APPS += CUSTOM_APPS
