@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
+# third party
+from ckeditor.fields import RichTextField
+
 # local import
 from core.model_mixins import TimeStampMixin
 from core.choices import STATUS_CHOICES
@@ -10,10 +13,10 @@ User = get_user_model()
 
 
 class CustomerUniqueIdConfig(TimeStampMixin):
-    prefix = models.CharField(max_length=5, blank=True, null=True)
-    id_length = models.IntegerField()
-    postfix = models.CharField(max_length=5, blank=True, null=True)
-    start_id = models.IntegerField(default=0)
+    prefix = models.CharField(max_length=5, blank=True, null=True, verbose_name=_('Prefix for Customer-Id'))
+    id_length = models.IntegerField(verbose_name=_('Length of Customer-Id'))
+    postfix = models.CharField(max_length=5, blank=True, null=True, verbose_name=_('Postfix for Customer-Id'))
+    start_id = models.IntegerField(default=0, verbose_name=_('Start indexing id'))
     counter = models.IntegerField(default=0)
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
 
@@ -38,4 +41,55 @@ class CustomerUniqueIdConfig(TimeStampMixin):
     class Meta:
         verbose_name = 'Unique ID configuration'
         verbose_name_plural = 'Customer unique-id configurations'
+
+
+class ShopInformation(TimeStampMixin):
+    name = models.CharField(max_length=255, verbose_name=_('Shop name'))
+    subtitle = models.CharField(max_length=255, verbose_name=_('Subtitle of shop'), blank=True, null=True)
+    owner_name = models.CharField(max_length=255, verbose_name=_('Shop owner name'))
+    mobile = models.CharField(max_length=10, verbose_name=_('Contact no.'))
+    alternative_contact = models.CharField(max_length=10, verbose_name=_('Alternative contact no.'), blank=True, null=True)
+    email = models.EmailField(blank=True, null=True, verbose_name=_('Shop email address'))
+    website = models.URLField(blank=True, null=True, verbose_name=_('Shop website'))
+    address = models.TextField(blank=True, null=True, verbose_name=_('Shop Address'),
+                               help_text=_('Enter the address you want to appear on invoices.'))
+    logo_for_invoice = models.ImageField(upload_to='shop-info/invoice-logo/', blank=True, null=True)
+    gst_no = models.CharField(max_length=50, blank=True, null=True, verbose_name=_('GST No.'))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Shop Information'
+        verbose_name_plural = 'Shop Information'
+
+
+# class InvoiceConfig(TimeStampMixin):
+#     gst_no = models.BooleanField(default=False)
+#     logo = models.BooleanField(default=False)
+#     shop_name = models.BooleanField(default=False)
+#     subtitle = models.BooleanField(default=False)
+#     shop_address = models.BooleanField(default=False)
+#     phone = models.BooleanField(default=False)
+#     alternative_phone = models.BooleanField(default=False)
+#     country_code_with_phone = models.BooleanField(default=False)
+#     bill_no = models.BooleanField(default=False)
+#     customer_name = models.BooleanField(default=False)
+#     customer_address = models.BooleanField(default=False)
+#     customer_phone = models.BooleanField(default=False)
+#     purchase_date = models.BooleanField(default=False)
+#
+
+
+class InvoicePDFTemplate(TimeStampMixin):
+    status = models.IntegerField(choices=STATUS_CHOICES, default=1)
+    template = RichTextField(verbose_name=_('Template Preview'))
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name = _('Invoice Template')
+        verbose_name_plural = _('Invoice PDF Templates')
+
 

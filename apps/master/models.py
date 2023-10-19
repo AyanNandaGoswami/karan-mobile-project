@@ -58,3 +58,16 @@ class Village(TimeStampMixin):
         verbose_name_plural = _('Villages')
 
 
+class Finance(TimeStampMixin):
+    name = models.CharField(max_length=100, verbose_name=_('Name of the finance.'), help_text='Ex. HDB Finance')
+    employee_name = models.CharField(max_length=255, verbose_name=_('Employee name'),
+                                     help_text=_('Who will do the finance process. Ex. Sukhamay Chnada'))
+    employee_mobile = models.CharField(max_length=10, verbose_name=_('Employee mobile no.'))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Finance'
+        verbose_name_plural = 'Finances'
+

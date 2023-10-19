@@ -31,3 +31,5 @@ class VillageAdmin(admin.ModelAdmin):
     search_fields = ('name', )
     raw_id_fields = ('post_office', )
 
+
+admin.site.register(Finance)

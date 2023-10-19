@@ -12,10 +12,8 @@ def handle_customer_post_save_signal(sender, instance, created, **kwargs):
     if created and instance.unique_id is None:
         config = CustomerUniqueIdConfig.get_active_config()
         if config:
-            print(config.counter)
-            print(config.start_id)
-            counter = config.counter or config.start_id + 1
-            print(counter)
+            counter = config.counter or config.start_id
+            counter += 1
             instance.unique_id = config.get_unique_id(counter=counter)
 
             # update counter

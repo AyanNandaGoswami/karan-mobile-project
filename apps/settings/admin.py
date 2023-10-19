@@ -9,3 +9,10 @@ from .models import *
 class CustomerUniqueIdConfigAdmin(admin.ModelAdmin):
     list_display = ('preview', 'status')
 
+
+@admin.register(ShopInformation)
+class ShopInformationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+
+admin.site.register(InvoicePDFTemplate)

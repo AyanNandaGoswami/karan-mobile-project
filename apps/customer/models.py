@@ -42,6 +42,10 @@ class Customer(TimeStampMixin):
     def name(self):
         return "%s%s%s" % (self.first_name, f' {self.middle_name} ' if self.middle_name else ' ', self.last_name)
 
+    @property
+    def customer_address(self):
+        return "%s, %s, %s, %s, %s" % (self.village.name, self.post_office, self.district, self.state, self.pin_no)
+
     class Meta:
         verbose_name = _('Customer')
         verbose_name_plural = _('Customers')
