@@ -5,14 +5,30 @@ from django.urls import reverse, path
 # local import
 from .models import *
 from .admin_actions import generate_invoice_pdf
+from .admin_forms import InvoiceItemAdminForm
+
+
+class InvoiceItemInline(admin.TabularInline):
+    model = InvoiceItems
+    extra = 0
+    verbose_name_plural = 'Invoice Items'
+    verbose_name = 'Item'
+    form = InvoiceItemAdminForm
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-    search_fields = ('bill_no', 'purchase_date', 'imei_no')
-    raw_id_fields = ('created_by', 'product', 'customer', 'finance')
+    search_fields = ('invoice_no', 'sale_date', 'imei_no')
+    raw_id_fields = ('created_by', 'customer', 'finance')
+    readonly_fields = ('invoice_no', 'created_by')
+    inlines = [InvoiceItemInline, ]
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.created_by = request.user
+        obj.save()
 
     def __init__(self, model, admin_site):
-        self.list_display = ['id', 'customer_name', 'product_name', 'purchase_date', 'invoice_pdf_button']
+        self.list_display = ['invoice_no', 'customer_name', 'sale_date', 'invoice_pdf_button']
         super(InvoiceAdmin, self).__init__(model, admin_site)
 
     def invoice_pdf_button(self, obj):
@@ -38,5 +54,5 @@ admin.site.register(Invoices, InvoiceAdmin)
 
 admin.site.register(Product)
 admin.site.register(ProductType)
-
+# admin.site.register(InvoiceItems)
 
