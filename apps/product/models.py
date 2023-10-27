@@ -62,7 +62,7 @@ class Invoices(TimeStampMixin):
 
     @property
     def total_amount_and_qty(self):
-        return InvoiceItems.objects.filter(invoice__id=10).aggregate(
+        return InvoiceItems.objects.filter(invoice=self).aggregate(
             total_amt=models.Sum("cost"), total_qty=models.Sum("quantity"), total_tax=models.Sum("taxable_amount"))
 
     class Meta:
