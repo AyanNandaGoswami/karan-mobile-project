@@ -14,6 +14,7 @@ class InvoiceItemInline(admin.TabularInline):
     verbose_name_plural = 'Invoice Items'
     verbose_name = 'Item'
     form = InvoiceItemAdminForm
+    readonly_fields = ('taxable_amount', 'rate')
 
 
 class InvoiceAdmin(admin.ModelAdmin):

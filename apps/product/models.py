@@ -25,7 +25,7 @@ class Product(TimeStampMixin):
     name = models.CharField(max_length=255, verbose_name=_('Name of the Product'))
     code = models.CharField(max_length=15, verbose_name=_('Product code'))
     description = models.TextField(blank=True, null=True, verbose_name=_('Product description'))
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Price'))
+    unit_price = models.FloatField(verbose_name=_('Price'))
     stock_quantity = models.PositiveIntegerField(default=0, verbose_name=_('Stock quantity'))
     p_type = models.ForeignKey(ProductType, on_delete=models.SET_NULL, blank=True, null=True, verbose_name=_('Product type'))
     serial_no = models.CharField(max_length=15, blank=True, null=True)
@@ -47,6 +47,7 @@ class Invoices(TimeStampMixin):
     dp = models.FloatField(default=0, verbose_name=_('Down payment'))
     emi = models.FloatField(default=0, verbose_name=_('EMI per month'))
     total_month = models.IntegerField(default=0, verbose_name=_('Total months to pay EMI'))
+    paid_amount = models.FloatField(default=0, verbose_name=_('Paid amount'))
 
     def __str__(self):
         return "%s | %s" % (self.invoice_no, self.customer.name)
@@ -54,6 +55,15 @@ class Invoices(TimeStampMixin):
     @property
     def customer_name(self):
         return self.customer.name
+
+    @property
+    def items(self):
+        return InvoiceItems.objects.filter(invoice=self)
+
+    @property
+    def total_amount_and_qty(self):
+        return InvoiceItems.objects.filter(invoice__id=10).aggregate(
+            total_amt=models.Sum("cost"), total_qty=models.Sum("quantity"), total_tax=models.Sum("taxable_amount"))
 
     class Meta:
         verbose_name = 'Invoice'
@@ -67,6 +77,9 @@ class InvoiceItems(TimeStampMixin):
                                 help_text=_('Choose your desired product'))
     imei_no = models.CharField(max_length=50, blank=True, null=True, verbose_name=_('IMEI No.'), help_text=_('Enter the unique IMEI No.'))
     quantity = models.IntegerField(default=0, verbose_name=_('Quantity'))
+    cost = models.FloatField(default=0, verbose_name=_('Price'))
+    rate = models.FloatField(default=0, verbose_name=_('Rate'))
+    taxable_amount = models.FloatField(default=0, verbose_name=_('Taxable amount'))
 
     def __str__(self):
         return "Invoice: %s | Product: %s" % (self.invoice, self.product)

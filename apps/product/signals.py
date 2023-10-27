@@ -31,4 +31,13 @@ def handle_invoiceitem_post_save_signal(sender, instance, created, **kwargs):
         instance.product.stock_quantity = instance.product.stock_quantity - instance.quantity
         instance.product.save()  # update product
 
+    if not instance.cost:
+        cost = instance.product.unit_price * instance.quantity
+        instance.cost = cost
+        gst = 1.18  # 18%
+        rate = round(cost / gst, 2)
+        taxable_amount = round(cost - rate, 2)
+        instance.taxable_amount = taxable_amount
+        instance.rate = rate
+        instance.save()
 
