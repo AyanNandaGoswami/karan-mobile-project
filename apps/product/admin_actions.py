@@ -26,10 +26,14 @@ def generate_valid_strings(plain_text, context):
 
 def get_context(invoice, request) -> dict:
     shop_info = ShopInformation.objects.last()
+    invoice_total_info = invoice.total_amount_and_qty
     ctx = {
         'shop_info': shop_info,
         'invoice': invoice,
         'shop_logo_url': request.build_absolute_uri(shop_info.logo_for_invoice.url),
+        'invoice_total_amt': invoice_total_info['total_amt'],
+        'invoice_total_quantity': invoice_total_info['total_qty'],
+        'invoice_total_tax': round(invoice_total_info['total_tax'], 2)
     }
     return ctx
 
