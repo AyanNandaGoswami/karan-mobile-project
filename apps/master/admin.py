@@ -14,7 +14,6 @@ class StateAdmin(admin.ModelAdmin):
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'state')
-    raw_id_fields = ('state', )
     search_fields = ('name', )
 
 
@@ -22,14 +21,12 @@ class DistrictAdmin(admin.ModelAdmin):
 class PostOfficeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'pin_no', 'dist')
     search_fields = ('name', )
-    raw_id_fields = ('dist', )
 
 
 @admin.register(Village)
 class VillageAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'post_office')
     search_fields = ('name', )
-    raw_id_fields = ('post_office', )
 
 
 admin.site.register(Finance)

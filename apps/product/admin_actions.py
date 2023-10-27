@@ -27,17 +27,9 @@ def generate_valid_strings(plain_text, context):
 def get_context(invoice, request) -> dict:
     shop_info = ShopInformation.objects.last()
     ctx = {
-        'shop_name': shop_info.name,
-        'subtitle': shop_info.subtitle,
-        'shop_address': shop_info.address,
+        'shop_info': shop_info,
+        'invoice': invoice,
         'shop_logo_url': request.build_absolute_uri(shop_info.logo_for_invoice.url),
-        'contact_no': shop_info.mobile,
-        'alternative_contact_no': shop_info.alternative_contact,
-        'bill_no': invoice.bill_no,
-        'customer_name': invoice.customer.name,
-        'customer_address': invoice.customer.customer_address,
-        'customer_contact': invoice.customer.mobile,
-        'purchase_date': invoice.purchase_date
     }
     return ctx
 
@@ -61,7 +53,7 @@ def generate_invoice_pdf(modeladmin, request, queryset):
     pdf_content = pdfkit.from_string(html_content, False, options=options)
 
     response = HttpResponse(pdf_content, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment;' + f'filename={invoice.customer.name}_{invoice.product.name}.pdf'
+    response['Content-Disposition'] = 'attachment;' + f'filename={invoice.customer.name}_{invoice.invoice_no}.pdf'
 
     return response
 

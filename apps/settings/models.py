@@ -8,11 +8,13 @@ from ckeditor.fields import RichTextField
 # local import
 from core.model_mixins import TimeStampMixin
 from core.choices import STATUS_CHOICES
+from .choices import UNIQUE_ID_CHOICE
 
 User = get_user_model()
 
 
-class CustomerUniqueIdConfig(TimeStampMixin):
+class UniqueIdConfig(TimeStampMixin):
+    type = models.CharField(choices=UNIQUE_ID_CHOICE, default='customer', max_length=10)
     prefix = models.CharField(max_length=5, blank=True, null=True, verbose_name=_('Prefix for Customer-Id'))
     id_length = models.IntegerField(verbose_name=_('Length of Customer-Id'))
     postfix = models.CharField(max_length=5, blank=True, null=True, verbose_name=_('Postfix for Customer-Id'))
@@ -35,12 +37,12 @@ class CustomerUniqueIdConfig(TimeStampMixin):
                            self.postfix if self.postfix else '')
 
     @staticmethod
-    def get_active_config():
-        return CustomerUniqueIdConfig.objects.filter(status=1).last()
+    def get_active_config(t: str):
+        return UniqueIdConfig.objects.filter(status=1, type=t).last()
 
     class Meta:
-        verbose_name = 'Unique ID configuration'
-        verbose_name_plural = 'Customer unique-id configurations'
+        verbose_name = 'Unique-ID configuration'
+        verbose_name_plural = 'Unique-ID configurations'
 
 
 class ShopInformation(TimeStampMixin):
@@ -62,23 +64,6 @@ class ShopInformation(TimeStampMixin):
     class Meta:
         verbose_name = 'Shop Information'
         verbose_name_plural = 'Shop Information'
-
-
-# class InvoiceConfig(TimeStampMixin):
-#     gst_no = models.BooleanField(default=False)
-#     logo = models.BooleanField(default=False)
-#     shop_name = models.BooleanField(default=False)
-#     subtitle = models.BooleanField(default=False)
-#     shop_address = models.BooleanField(default=False)
-#     phone = models.BooleanField(default=False)
-#     alternative_phone = models.BooleanField(default=False)
-#     country_code_with_phone = models.BooleanField(default=False)
-#     bill_no = models.BooleanField(default=False)
-#     customer_name = models.BooleanField(default=False)
-#     customer_address = models.BooleanField(default=False)
-#     customer_phone = models.BooleanField(default=False)
-#     purchase_date = models.BooleanField(default=False)
-#
 
 
 class InvoicePDFTemplate(TimeStampMixin):

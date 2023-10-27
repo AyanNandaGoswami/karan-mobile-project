@@ -5,9 +5,10 @@ from django.contrib import admin
 from .models import *
 
 
-@admin.register(CustomerUniqueIdConfig)
+@admin.register(UniqueIdConfig)
 class CustomerUniqueIdConfigAdmin(admin.ModelAdmin):
-    list_display = ('preview', 'status')
+    list_display = ('preview', 'status', 'type')
+    list_filter = ('type', )
 
 
 @admin.register(ShopInformation)
