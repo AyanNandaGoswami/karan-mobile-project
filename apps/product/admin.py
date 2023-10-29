@@ -63,6 +63,6 @@ admin.site.register(Invoices, InvoiceAdmin)
 
 admin.site.register(Product)
 admin.site.register(ProductType)
-admin.site.register(InvoiceItems)
-admin.site.register(InvoiceShipToDetail)
+# admin.site.register(InvoiceItems)
+# admin.site.register(InvoiceShipToDetail)
 

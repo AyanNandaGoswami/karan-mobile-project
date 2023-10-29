@@ -42,7 +42,7 @@ def get_context(invoice, request) -> dict:
         'invoice_total_tax': round(invoice_total_info['total_tax'], 2) if invoice_total_info['total_tax'] else None,
         'invoice_conf': invoice_conf,
         'shipping_detail': shipping_detail,
-        'taxable_amount': sum([i.rate for i in invoice.items])
+        'taxable_amount': round(sum([i.rate for i in invoice.items]), 2)
     }
     ctx['tax'] = round(ctx['invoice_total_tax'] / 2, 2) if ctx['invoice_total_tax'] else None
     if invoice.discount:
