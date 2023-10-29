@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 # local import
 from core.model_mixins import TimeStampMixin
 from apps.customer.models import Customer
-from apps.master.models import Finance
+from apps.master.models import Finance, Village
 
 User = get_user_model()
 
@@ -28,7 +28,6 @@ class Product(TimeStampMixin):
     unit_price = models.FloatField(verbose_name=_('Price'))
     stock_quantity = models.PositiveIntegerField(default=0, verbose_name=_('Stock quantity'))
     p_type = models.ForeignKey(ProductType, on_delete=models.SET_NULL, blank=True, null=True, verbose_name=_('Product type'))
-    serial_no = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -43,11 +42,16 @@ class Invoices(TimeStampMixin):
     invoice_no = models.CharField(blank=True, null=True, verbose_name=_('Invoice No.'), max_length=25)
     sale_date = models.DateField(verbose_name=_("Date of sale"), blank=True, null=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name=_('Customer'), help_text=_('Choose one customer'))
+    discount = models.IntegerField(default=0, verbose_name=_('Discount(%)'))
+    paid_amount = models.IntegerField(default=0, verbose_name=_('Paid amount'))
+    ship_to_as_bill_to = models.BooleanField(default=False, verbose_name=_('Ship to same as bill to'))
+    customer_signature = models.BooleanField(default=False, verbose_name=_('Show Customer Signature box on invoice'))
+
+    # finance
     finance = models.ForeignKey(Finance, on_delete=models.SET_NULL, blank=True, null=True)
     dp = models.FloatField(default=0, verbose_name=_('Down payment'))
     emi = models.FloatField(default=0, verbose_name=_('EMI per month'))
     total_month = models.IntegerField(default=0, verbose_name=_('Total months to pay EMI'))
-    paid_amount = models.FloatField(default=0, verbose_name=_('Paid amount'))
 
     def __str__(self):
         return "%s | %s" % (self.invoice_no, self.customer.name)
@@ -76,6 +80,7 @@ class InvoiceItems(TimeStampMixin):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True, verbose_name=_('Product'),
                                 help_text=_('Choose your desired product'))
     imei_no = models.CharField(max_length=50, blank=True, null=True, verbose_name=_('IMEI No.'), help_text=_('Enter the unique IMEI No.'))
+    serial_no = models.CharField(max_length=50, blank=True, null=True, verbose_name=_('Serial no.'), help_text=_('Enter the serial no.'))
     quantity = models.IntegerField(default=0, verbose_name=_('Quantity'))
     cost = models.FloatField(default=0, verbose_name=_('Price'))
     rate = models.FloatField(default=0, verbose_name=_('Rate'))
@@ -84,7 +89,52 @@ class InvoiceItems(TimeStampMixin):
     def __str__(self):
         return "Invoice: %s | Product: %s" % (self.invoice, self.product)
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.cost:
+            # calculate GST based on cost
+            gst = 1.18  # 18%
+            rate = round(self.cost / gst, 2)
+            taxable_amount = round(self.cost - rate, 2)
+            self.taxable_amount = taxable_amount
+            self.rate = rate
+        super(InvoiceItems, self).save()
+
     class Meta:
         verbose_name = 'Invoice Item'
         verbose_name_plural = 'Invoice Items'
 
+
+class InvoiceShipToDetail(TimeStampMixin):
+    invoice = models.OneToOneField(Invoices, on_delete=models.CASCADE, verbose_name=_('Invoice'),
+                                   help_text=_('Select invoice'), related_name='invoice_ship_detail')
+    name = models.CharField(max_length=255, verbose_name=_("Name"), blank=True, null=True)
+    mobile_no = models.CharField(max_length=10, verbose_name=_('Contact No.'), blank=True, null=True)
+    village = models.ForeignKey(Village, on_delete=models.SET_NULL, blank=True, null=True,
+                                verbose_name=_('Select village'))
+    post_office = models.CharField(max_length=75, blank=True, null=True, verbose_name=_('Post office'))
+    district = models.CharField(max_length=75, blank=True, null=True, verbose_name=_('District'))
+    state = models.CharField(max_length=55, blank=True, null=True, verbose_name=_('State'))
+    pin_no = models.IntegerField(blank=True, null=True, verbose_name=_('PIN code number'))
+
+    def __str__(self):
+        return self.name
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.village:
+            self.post_office = self.village.post_office.name
+            self.district = self.village.post_office.dist.name
+            self.state = self.village.post_office.dist.state.name
+            self.pin_no = self.village.post_office.pin_no
+        super(InvoiceShipToDetail, self).save()
+
+    @property
+    def contact(self):
+        return self.mobile_no or ''
+
+    @property
+    def address(self):
+        return "%s, %s, %s, %s, %s" % (self.village.name, self.post_office, self.district, self.state, self.pin_no)
+
+    class Meta:
+        verbose_name = 'Ship to detail'
+        verbose_name_plural = 'Invoice Ship To Details'

@@ -17,11 +17,19 @@ class InvoiceItemInline(admin.TabularInline):
     readonly_fields = ('taxable_amount', 'rate')
 
 
+class InvoiceShipDetailInline(admin.TabularInline):
+    model = InvoiceShipToDetail
+    extra = 0
+    verbose_name = 'Shipping Detail'
+    verbose_name_plural = 'Shipping Details'
+    readonly_fields = ('post_office', 'district', 'state', 'pin_no')
+
+
 class InvoiceAdmin(admin.ModelAdmin):
     search_fields = ('invoice_no', 'sale_date', 'imei_no')
     raw_id_fields = ('created_by', 'customer', 'finance')
     readonly_fields = ('invoice_no', 'created_by')
-    inlines = [InvoiceItemInline, ]
+    inlines = [InvoiceItemInline, InvoiceShipDetailInline]
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -55,5 +63,6 @@ admin.site.register(Invoices, InvoiceAdmin)
 
 admin.site.register(Product)
 admin.site.register(ProductType)
-# admin.site.register(InvoiceItems)
+admin.site.register(InvoiceItems)
+admin.site.register(InvoiceShipToDetail)
 

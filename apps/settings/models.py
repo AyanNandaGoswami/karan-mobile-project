@@ -57,6 +57,14 @@ class ShopInformation(TimeStampMixin):
                                help_text=_('Enter the address you want to appear on invoices.'))
     logo_for_invoice = models.ImageField(upload_to='shop-info/invoice-logo/', blank=True, null=True)
     gst_no = models.CharField(max_length=50, blank=True, null=True, verbose_name=_('GST No.'))
+    digital_signature = models.ImageField(upload_to='shop-info/digital-signature/', blank=True, null=True)
+    # bank details
+    ac_name = models.CharField(max_length=150, blank=True, null=True, verbose_name=_('A/C Name'))
+    bank_name = models.CharField(max_length=150, blank=True, null=True, verbose_name=_('Bank Name'))
+    ac_no = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('A/C No.'))
+    ifsc = models.CharField(max_length=25, blank=True, null=True, verbose_name=_('IFSC No.'))
+    branch = models.CharField(max_length=35, blank=True, null=True, verbose_name=_('Branch'))
+    payment_qr = models.ImageField(upload_to='shop-info/payment-qr/', blank=True, null=True, verbose_name=_('Payment QR'))
 
     def __str__(self):
         return self.name
@@ -77,4 +85,21 @@ class InvoicePDFTemplate(TimeStampMixin):
         verbose_name = _('Invoice Template')
         verbose_name_plural = _('Invoice PDF Templates')
 
+
+class InvoiceConfiguration(TimeStampMixin):
+    status = models.IntegerField(choices=STATUS_CHOICES, default=1)
+    show_bank_detail = models.BooleanField(default=False, verbose_name=_('Show bank details on invoices'))
+    show_tax_invoice = models.BooleanField(default=False, verbose_name=_('Show "Tax Invoice" on invoices'))
+    show_quotation = models.BooleanField(default=False, verbose_name=_('Show "Quotation" on invoices'))
+    digital_signature = models.BooleanField(default=False, verbose_name=_('Enable digital signatures on invoices'))
+    show_finance_details = models.BooleanField(default=False, verbose_name=_('Show finance details on invoices'))
+    show_qr_code = models.BooleanField(default=False, verbose_name=_('Show QR code on invoice'))
+    round_off = models.BooleanField(default=False, verbose_name=_('Enable round-off'))
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name = 'Invoice Configuration'
+        verbose_name_plural = 'Invoice Configurations'
 
