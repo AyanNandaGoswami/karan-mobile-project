@@ -3,3 +3,5 @@ pillow==10.1.0
 django-jazzmin==2.6.0
 pdfkit==1.0.0
 django-ckeditor==6.7.0
+num2words==0.5.13
+

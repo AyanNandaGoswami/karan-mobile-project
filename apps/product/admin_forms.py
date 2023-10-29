@@ -2,7 +2,7 @@
 from django import forms
 
 # local import
-from .models import InvoiceItems, Product
+from .models import InvoiceItems, InvoiceShipToDetail, Invoices
 
 
 class InvoiceItemAdminForm(forms.ModelForm):
@@ -17,5 +17,4 @@ class InvoiceItemAdminForm(forms.ModelForm):
                 raise forms.ValidationError("The stock for %s is currently empty. Please restock this item." % cleaned_data.get('product'))
             if cleaned_data.get('quantity') <= 0:
                 raise forms.ValidationError("Quantity is not valid for product %s" % cleaned_data.get('product'))
-
 

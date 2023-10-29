@@ -17,3 +17,4 @@ class ShopInformationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(InvoicePDFTemplate)
+admin.site.register(InvoiceConfiguration)
