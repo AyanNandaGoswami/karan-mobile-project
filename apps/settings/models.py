@@ -95,6 +95,7 @@ class InvoiceConfiguration(TimeStampMixin):
     show_finance_details = models.BooleanField(default=False, verbose_name=_('Show finance details on invoices'))
     show_qr_code = models.BooleanField(default=False, verbose_name=_('Show QR code on invoice'))
     round_off = models.BooleanField(default=False, verbose_name=_('Enable round-off'))
+    original_for_recipient = models.BooleanField(default=False, verbose_name=_('Show "ORIGINAL FOR RECIPIENT"'))
 
     def __str__(self):
         return str(self.id)
