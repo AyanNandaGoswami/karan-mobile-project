@@ -6,6 +6,7 @@ from django.utils.translation import gettext as _
 from core.model_mixins import TimeStampMixin
 from apps.customer.models import Customer
 from apps.master.models import Finance, Village
+from apps.settings.models import InvoiceConfiguration
 
 User = get_user_model()
 
@@ -52,6 +53,8 @@ class Invoices(TimeStampMixin):
     dp = models.FloatField(default=0, verbose_name=_('Down payment'))
     emi = models.FloatField(default=0, verbose_name=_('EMI per month'))
     total_month = models.IntegerField(default=0, verbose_name=_('Total months to pay EMI'))
+    margin_money = models.IntegerField(default=0, verbose_name=_('Margin Money'))
+    advance_emi = models.IntegerField(default=0, verbose_name=_('Advance EMI'))
 
     def __str__(self):
         return "%s | %s" % (self.invoice_no, self.customer.name)
@@ -68,6 +71,22 @@ class Invoices(TimeStampMixin):
     def total_amount_and_qty(self):
         return InvoiceItems.objects.filter(invoice=self).aggregate(
             total_amt=models.Sum("cost"), total_qty=models.Sum("quantity"), total_tax=models.Sum("taxable_amount"))
+
+    @property
+    def formatted_date(self):
+        invoice_conf, created = InvoiceConfiguration.objects.get_or_create()
+
+        format_conf = {
+            'format_1': self.sale_date.strftime("%b %d, %Y"),
+            'format_2': self.sale_date.strftime("%d/%m/%Y"),
+            'format_3': self.sale_date.strftime("%m/%d/%Y"),
+            'format_4': self.sale_date.strftime("%Y/%m/%d"),
+            'format_5': self.sale_date.strftime("%d-%m-%Y"),
+            'format_6': self.sale_date.strftime("%m-%d-%Y"),
+            'format_7': self.sale_date.strftime("%Y-%m-%d"),
+            'format_8': self.sale_date.strftime("%d %b, %Y"),
+        }
+        return format_conf.get(invoice_conf.date_format)
 
     class Meta:
         verbose_name = 'Invoice'
@@ -88,6 +107,10 @@ class InvoiceItems(TimeStampMixin):
 
     def __str__(self):
         return "Invoice: %s | Product: %s" % (self.invoice, self.product)
+
+    @property
+    def serial_or_imei(self):
+        return self.imei_no or self.serial_no or ''
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.cost:

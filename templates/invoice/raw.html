@@ -30,7 +30,7 @@
 
         <div class="invoice-info" style="background-color:#f0f0f0; border-top:8px solid #2c3e50; display:flex; justify-content:space-around; padding:10px; margin-top: 2px;">
             <div class="left-info" style="width:48%"><span style="color:#2c3e50;font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif;"><strong>Invoice No.:</strong> {{ invoice.invoice_no }}</span></div>
-            <div class="right-info" style="text-align:right; width:48%;font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif;"><span style="color:#2c3e50;"><strong>Invoice Date:</strong> {{ invoice.sale_date }}</span></div>
+            <div class="right-info" style="text-align:right; width:48%;font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif;"><span style="color:#2c3e50;"><strong>Invoice Date:</strong> {{ invoice.formatted_date }}</span></div>
         </div>
 
         <div class="bill-ship" style="display:flex; justify-content:space-between;">
@@ -65,7 +65,7 @@
             <tr>
                 <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: left; color: #2c3e50; width: 4%; font-size: 14px;">SL. NO.</th>
                 <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">ITEMS</th>
-                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">IMEI NO.</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">IMEI/Serial NO.</th>
                 <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50; width: 9%; font-size: 14px;">QTY.</th>
                 <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 9%; font-size: 14px;">RATE</th>
                 <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 9%; font-size: 14px;">TAX</th>
@@ -76,10 +76,10 @@
                 <tr>
                     <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: left; color: #2c3e50; width: 4%; font-size: 14px;">{{ forloop.counter }}</td>
                     <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">{{ item.product.name }}</td>
-                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">{{ item.product.serial_or_iemi }}</td>
-                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: right; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.quantity }}</td>
-                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: right; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.rate }}</td>
-                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: right; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.taxable_amount }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">{{ item.serial_or_imei }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: center; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.quantity }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: center; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.rate }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: center; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.taxable_amount }}</td>
                     <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: right; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.cost }}</td>
                 </tr>
             {% endfor %}
@@ -93,9 +93,9 @@
                 <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: left; color: #2c3e50; width: 4%; font-size: 14px;">SUBTOTAL</th>
                 <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 30%; font-size: 14px;"></th>
                 <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 30%; font-size: 14px;"></th>
-                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: right; color: #2c3e50;width: 9%; font-size: 14px;">{{ invoice_total_quantity }}</th>
-                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: right; color: #2c3e50;width: 9%; font-size: 14px;"></th>
-                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: right; color: #2c3e50;width: 9%; font-size: 14px;">{{ invoice_total_tax }}</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 9%; font-size: 14px;">{{ invoice_total_quantity }}</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 9%; font-size: 14px;"></th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 9%; font-size: 14px;">{{ invoice_total_tax }}</th>
                 <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: right; color: #2c3e50;width: 9%; font-size: 14px;">{{ invoice_total_amt }}</th>
             </tr>
         </table>
@@ -105,8 +105,8 @@
                 <div class="finance-notes" style="width: 100%">
                     <!-- Invoice Header -->
                     <h4 style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;">NOTES</h4>
-                    {% if finance %}
-                        <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px;">{{ finance_note }}</span><br />
+                    {% if invoice.finance %}
+                        <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px;">{{ finance_note|striptags }}</span><br />
                     {% endif %}
                 </div>
                 {% if invoice_conf.show_bank_detail or invoice_conf.show_qr_code %}

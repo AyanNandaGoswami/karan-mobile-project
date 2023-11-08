@@ -26,6 +26,18 @@ def generate_valid_strings(plain_text, context):
     return generated_string
 
 
+def get_finance_note(invoice):
+    if invoice.finance:
+        context = {
+            'advance_emi': int(invoice.advance_emi),
+            'margin_money': int(invoice.margin_money),
+            'down_payment': int(invoice.dp),
+            'per_month_emi': int(invoice.emi)
+        }
+        return generate_valid_strings(invoice.finance.finance_note, context)
+    return None
+
+
 def get_context(invoice, request) -> dict:
     shop_info = ShopInformation.objects.last()
     invoice_total_info = invoice.total_amount_and_qty
@@ -42,7 +54,8 @@ def get_context(invoice, request) -> dict:
         'invoice_total_tax': round(invoice_total_info['total_tax'], 2) if invoice_total_info['total_tax'] else None,
         'invoice_conf': invoice_conf,
         'shipping_detail': shipping_detail,
-        'taxable_amount': round(sum([i.rate for i in invoice.items]), 2)
+        'taxable_amount': round(sum([i.rate for i in invoice.items]), 2),
+        'finance_note': get_finance_note(invoice=invoice)
     }
     ctx['tax'] = round(ctx['invoice_total_tax'] / 2, 2) if ctx['invoice_total_tax'] else None
     if invoice.discount:
@@ -81,4 +94,13 @@ def generate_invoice_pdf(modeladmin, request, queryset):
     return response
 
 
+def preview_invoice(modeladmin, request, queryset):
+    invoice = queryset.last()
+    context = get_context(invoice, request)
+    template_config = InvoicePDFTemplate.objects.last()
+    html_content = generate_valid_strings(template_config.template, context)
+    return HttpResponse(html_content)
+
+
+preview_invoice.short_description = 'View Invoice'
 generate_invoice_pdf.short_description = 'Download pdf for selected invoice'

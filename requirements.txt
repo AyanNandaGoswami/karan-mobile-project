@@ -5,3 +5,6 @@ pdfkit==1.0.0
 django-ckeditor==6.7.0
 num2words==0.5.13
 
+
+# these software must have to install in the system
+# sudo apt install wkhtmltopdf

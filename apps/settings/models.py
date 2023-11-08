@@ -8,7 +8,7 @@ from ckeditor.fields import RichTextField
 # local import
 from core.model_mixins import TimeStampMixin
 from core.choices import STATUS_CHOICES
-from .choices import UNIQUE_ID_CHOICE
+from .choices import UNIQUE_ID_CHOICE, DATE_FORMAT
 
 User = get_user_model()
 
@@ -96,6 +96,7 @@ class InvoiceConfiguration(TimeStampMixin):
     show_qr_code = models.BooleanField(default=False, verbose_name=_('Show QR code on invoice'))
     round_off = models.BooleanField(default=False, verbose_name=_('Enable round-off'))
     original_for_recipient = models.BooleanField(default=False, verbose_name=_('Show "ORIGINAL FOR RECIPIENT"'))
+    date_format = models.CharField(choices=DATE_FORMAT, default='format_1', max_length=12)
 
     def __str__(self):
         return str(self.id)
