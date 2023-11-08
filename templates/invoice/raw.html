@@ -1,0 +1,215 @@
+
+    <div style="margin: 50px 50px 10px 50px;">
+        {% if invoice_conf.show_tax_invoice %}
+            <div class="main-head" style="display: flex; align-items: center;">
+                <div><p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50; font-size: 20px; margin: 0px;"><strong>TAX INVOICE</strong></p></div>
+                {% if invoice_conf.original_for_recipient %}
+                    <div style="max-width: 100%; border: 2px solid #a8a5a5; padding: 4px; margin-left: 35px; font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; font-size: 18px; color: #7e7e7e;">ORIGINAL FOR RECIPIENT</div>
+                {% endif %}
+            </div>
+        {% elif invoice_conf.show_quotation %}
+            <div class="main-head" style="display: flex; align-items: center;">
+                <div><p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50; font-size: 20px; margin: 0px;"><strong>QUOTATION</strong></p></div>
+                {% if invoice_conf.original_for_recipient %}
+                    <div style="max-width: 100%; border: 2px solid #a8a5a5; padding: 4px; margin-left: 35px; font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; font-size: 18px; color: #7e7e7e;">ORIGINAL FOR RECIPIENT</div>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="header-text-logo" style="display:flex; justify-content:space-between;">
+            <div class="header-content">
+                <!-- Invoice Header -->
+                <h1 style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#358faa; font-size: 35px;">{{ shop_info.name }}</h1>
+                <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:18px">{{ shop_info.address }}</span><br />
+                    <span style="font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:18px; color:#2c3e50;"><strong>MOBILE:</strong> </span> <span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:18px"> +91 {{ shop_info.mobile }}</span> <span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:18px"> {% if shop_info.alternative_contact %}/ +91 {{ shop_info.alternative_contact }}</span>{% endif %} &nbsp; <span style="font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:18px; color:#2c3e50;"><strong>GSTIN:</strong></span> <span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:18px">{{ shop_info.gst_no }}</span></p>
+            </div>
+            <div class="logo">
+                <img style="width: 160px; height: 160px;" src="{{ shop_logo_url }}">
+            </div>
+        </div>
+        <!-- Invoice Details -->
+
+        <div class="invoice-info" style="background-color:#f0f0f0; border-top:8px solid #2c3e50; display:flex; justify-content:space-around; padding:10px; margin-top: 2px;">
+            <div class="left-info" style="width:48%"><span style="color:#2c3e50;font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif;"><strong>Invoice No.:</strong> {{ invoice.invoice_no }}</span></div>
+            <div class="right-info" style="text-align:right; width:48%;font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif;"><span style="color:#2c3e50;"><strong>Invoice Date:</strong> {{ invoice.sale_date }}</span></div>
+        </div>
+
+        <div class="bill-ship" style="display:flex; justify-content:space-between;">
+            <div class="bill-to" style="width: 50%;">
+                <h3><span style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50; font-size: 18px;">BILL TO</span></h3>
+                <span style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif"><strong><span style="color:#2c3e50; font-size: 16px;">{{ invoice.customer.name }}</span></strong></span></span>
+                <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px">{{ invoice.customer.customer_address }}</span></p>
+                <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px">Mobile: +91 {{ invoice.customer.mobile }}</span></p>
+                <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px">State: {{ invoice.customer.state }}</span></p>
+            </div>
+           <div class="ship-to" style="width: 50%;">
+               {% if invoice.ship_to_as_bill_to %}
+                    <h3><span style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50; font-size: 18px;">SHIP TO</span></h3>
+                    <span style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif"><strong><span style="color:#2c3e50; font-size: 16px;">{{ invoice.customer.name }}</span></strong></span></span>
+                    <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px">{{ invoice.customer.customer_address }}</span></p>
+                    <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px">Mobile: +91 {{ invoice.customer.mobile }}</span></p>
+                    <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px">State: {{ invoice.customer.state }}</span></p>
+               {% elif shipping_detail %}
+                    <h3><span style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50; font-size: 18px;">SHIP TO</span></h3>
+                    <span style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif"><strong><span style="color:#2c3e50; font-size: 16px;">{{ shipping_detail.name }}</span></strong></span></span>
+                    <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px">{{ shipping_detail.address }}</span></p>
+                    <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px">Mobile: +91 {{ shipping_detail.contact }}</span></p>
+                    <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px">State: {{ shipping_detail.state }}</span></p>
+               {% endif %}
+            </div>
+        </div>
+
+        <!-- Gap between tables -->
+        <div style="height: 20px;"></div>
+
+        <table style="border-collapse: collapse; width: 100%;">
+            <tr>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: left; color: #2c3e50; width: 4%; font-size: 14px;">SL. NO.</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">ITEMS</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">IMEI NO.</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50; width: 9%; font-size: 14px;">QTY.</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 9%; font-size: 14px;">RATE</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 9%; font-size: 14px;">TAX</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: right; color: #2c3e50;width: 9%; font-size: 14px;">AMOUNT</th>
+            </tr>
+
+            {% for item in invoice.items %}
+                <tr>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: left; color: #2c3e50; width: 4%; font-size: 14px;">{{ forloop.counter }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">{{ item.product.name }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: left; color: #2c3e50; width: 30%; font-size: 14px;">{{ item.product.serial_or_iemi }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: right; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.quantity }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: right; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.rate }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: right; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.taxable_amount }}</td>
+                    <td style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border: 3px solid #f4f0f0; border-left: none; border-right: none; border-top: none; padding: 8px; text-align: right; color: #2c3e50; width: 9%; font-size: 14px;">{{ item.cost }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <!-- Gap between tables -->
+        <div style="height: 30px;"></div>
+
+        <table style="border-collapse: collapse; width: 100%;">
+            <tr>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: left; color: #2c3e50; width: 4%; font-size: 14px;">SUBTOTAL</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 30%; font-size: 14px;"></th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: center; color: #2c3e50;width: 30%; font-size: 14px;"></th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: right; color: #2c3e50;width: 9%; font-size: 14px;">{{ invoice_total_quantity }}</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: right; color: #2c3e50;width: 9%; font-size: 14px;"></th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: right; color: #2c3e50;width: 9%; font-size: 14px;">{{ invoice_total_tax }}</th>
+                <th style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none; padding: 8px; text-align: right; color: #2c3e50;width: 9%; font-size: 14px;">{{ invoice_total_amt }}</th>
+            </tr>
+        </table>
+
+        <div class="after-subtotal" style="display:flex; justify-content:space-between;">
+            <div class="notes" style="width: 60%;">
+                <div class="finance-notes" style="width: 100%">
+                    <!-- Invoice Header -->
+                    <h4 style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;">NOTES</h4>
+                    {% if finance %}
+                        <p><span style="color:#2c3e50; font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif; font-size:15px;">{{ finance_note }}</span><br />
+                    {% endif %}
+                </div>
+                {% if invoice_conf.show_bank_detail or invoice_conf.show_qr_code %}
+                    <div class="bank-details-qr" style="margin-top: 25px; display:flex; justify-content:space-between; width: 99%; border-left: 4px solid #b2bac1; padding-left: 10px;">
+                        {% if invoice_conf.show_bank_detail %}
+                            <div class="bank-details" style="width: 50%;">
+                                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color: #2c3e50; font-size: 18px;"><strong>Company's Bank Details:</strong></p>
+                                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color: #2c3e50; font-size: 14px;">A/c Name - {{ shop_info.ac_name }}</p>
+                                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color: #2c3e50; font-size: 14px;">Bank Name - {{ shop_info.bank_name }}</p>
+                                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color: #2c3e50; font-size: 14px;">A/c No - {{ shop_info.ac_no }}</p>
+                                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color: #2c3e50; font-size: 14px;">IFSC - {{ shop_info.ifsc }}</p>
+                                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color: #2c3e50; font-size: 14px;">Branch - {{ shop_info.branch }}</p>
+                            </div>
+                        {% endif %}
+                        {% if invoice_conf.show_qr_code %}
+                            <div class="qr-details" style="padding-right: 20px; width: 50%; text-align: right;">
+                                <img src="{{ payment_qr_url }}" style="width: 150px; height: 150px;">
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="amount-explain" style="width: 50%;">
+                <div class="calculations" style="display: flex; justify-content: space-between; width: 100%;">
+                    <div class="left-values" style="width: 40%; padding: 0px 10px; text-align: left;">
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">TAXABLE AMOUNT</p>
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">CGST @9%</p>
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">SGST @9%</p>
+                        {% if invoice.discount %}
+                            <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">DISCOUNT @{{ invoice.discount }}%</p>
+                        {% endif %}
+                        {% if invoice_conf.round_off %}
+                            {% if round_off %}
+                                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">ROUND OFF</p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="right-values" style="width: 40%; padding: 0px 10px; text-align: right;">
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">&#8377; {{ taxable_amount }}</p>
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">&#8377; {{ tax }}</p>
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">&#8377; {{ tax }}</p>
+                        {% if invoice.discount %}
+                            <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">- &#8377; {{ discount }}</p>
+                        {% endif %}
+                        {% if invoice_conf.round_off %}
+                            {% if round_off %}
+                                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">- &#8377; {{ round_off }}</p>
+                            {% endif %}
+                        {% endif %}
+
+                    </div>
+                </div>
+                <div class="total-amt" style="display: flex; justify-content: space-between; width: 100%; border-top: 3px solid #2c3e50; border-bottom: 3px solid #2c3e50; border-left: none; border-right: none;">
+                    <div class="left-values" style="width: 50%; padding: 0px 10px; text-align: left;">
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;"><strong>TOTAL AMOUNT</strong></p>
+                    </div>
+                    <div class="right-values" style="width: 50%; text-align: right; padding: 0px 10px;">
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;"><strong>&#8377; {{ invoice_total }}</strong></p>
+                    </div>
+                </div>
+                <div class="received-amt" style="display: flex; justify-content: space-between; width: 100%;">
+                    <div class="left-values" style="width: 50%; padding: 0px 10px; text-align: left;">
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">RECEIVED AMOUNT</p>
+                    </div>
+                    <div class="right-values" style="width: 50%; text-align: right; padding: 0px 10px; ">
+                        <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;">{% if invoice.paid_amount %}&#8377; {{ invoice.paid_amount }} {% else %} {{ invoice.paid_amount }} {% endif %}</p>
+                    </div>
+                </div>
+                <div class="amt-in-words" style="width: 100%; text-align: right; font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color: #2c3e50;">
+                    <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;font-size:15px;"><strong>Total Amount(in words)</strong></p>
+                    <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#696e73;font-size:15px;">
+                        {{amt_in_words}} rupees</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="signature" style="display:flex; justify-content:space-between; margin-top: 25px;">
+            {% if invoice.customer_signature %}
+                <div class="customer" style="width: 50%; height: 120px; border: 2px solid #b2bac1; margin-right: 50px;">
+                </div>
+            {% else %}
+                <div class="customer" style="width: 50%;">
+                </div>
+            {% endif %}
+            <div class="authorize-signature" style="width: 50%; height: 120px; border: 2px solid #b2bac1; margin-left: 50px; display: flex; justify-content: center;">
+                {% if invoice_conf.digital_signature %}
+                    <img src="{{ digital_sig_url }}" style="width: auto; height: 120px;">
+                {% endif %}
+            </div>
+        </div>
+        <div class="signature-for" style="display:flex; justify-content:space-between;">
+            <div class="customer" style="width: 50%;">
+                {% if invoice.customer_signature %}
+                    <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;"><strong>CUSTOMER SIGNATURE</strong></p>
+                {% endif %}
+            </div>
+            <div class="authorize-signature" style="width: 50%; text-align: right;">
+                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;"><strong>AUTHORIZED SIGNATURE FOR</strong></p>
+                <p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50;"><strong>{{ shop_info.name }}</strong></p>
+            </div>
+        </div>
+
+    </div>
+
+

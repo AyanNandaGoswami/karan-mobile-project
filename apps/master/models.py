@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
+# third party
+from ckeditor.fields import RichTextField
+
 # local import
 from core.model_mixins import TimeStampMixin
 
@@ -63,6 +66,7 @@ class Finance(TimeStampMixin):
     employee_name = models.CharField(max_length=255, verbose_name=_('Employee name'),
                                      help_text=_('Who will do the finance process. Ex. Sukhamay Chnada'))
     employee_mobile = models.CharField(max_length=10, verbose_name=_('Employee mobile no.'))
+    finance_note = RichTextField(blank=True, verbose_name=_('Finance note for Invoice.'))
 
     def __str__(self):
         return self.name
