@@ -46,10 +46,10 @@ class UniqueIdConfig(TimeStampMixin):
 
 
 class ShopInformation(TimeStampMixin):
-    name = models.CharField(max_length=255, verbose_name=_('Shop name'))
+    name = models.CharField(max_length=255, verbose_name=_('Shop name'), blank=True, null=True)
     subtitle = models.CharField(max_length=255, verbose_name=_('Subtitle of shop'), blank=True, null=True)
-    owner_name = models.CharField(max_length=255, verbose_name=_('Shop owner name'))
-    mobile = models.CharField(max_length=10, verbose_name=_('Contact no.'))
+    owner_name = models.CharField(max_length=255, verbose_name=_('Shop owner name'), blank=True, null=True)
+    mobile = models.CharField(max_length=10, verbose_name=_('Contact no.'), blank=True, null=True)
     alternative_contact = models.CharField(max_length=10, verbose_name=_('Alternative contact no.'), blank=True, null=True)
     email = models.EmailField(blank=True, null=True, verbose_name=_('Shop email address'))
     website = models.URLField(blank=True, null=True, verbose_name=_('Shop website'))
@@ -67,7 +67,7 @@ class ShopInformation(TimeStampMixin):
     payment_qr = models.ImageField(upload_to='shop-info/payment-qr/', blank=True, null=True, verbose_name=_('Payment QR'))
 
     def __str__(self):
-        return self.name
+        return self.name if self.name else str(self.id)
 
     class Meta:
         verbose_name = 'Shop Information'

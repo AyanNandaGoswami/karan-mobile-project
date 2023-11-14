@@ -74,7 +74,7 @@ class Invoices(TimeStampMixin):
 
     @property
     def formatted_date(self):
-        invoice_conf, created = InvoiceConfiguration.objects.get_or_create()
+        invoice_conf = InvoiceConfiguration.objects.last()
 
         format_conf = {
             'format_1': self.sale_date.strftime("%b %d, %Y"),
