@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 
 # local import
 from .models import *
-from mobile_shop_project.settings import DEVELOPMENT
+from mobile_shop_project.settings import SMART_ADMIN_PANEL
 
 
 @admin.register(UniqueIdConfig)
@@ -21,7 +21,7 @@ class ShopInformationAdmin(admin.ModelAdmin):
         model = ShopInformation
 
     def changelist_view(self, request, extra_context=None):
-        if not DEVELOPMENT:
+        if not SMART_ADMIN_PANEL:
             obj = self.Meta.model.objects.last()
             if obj:
                 return HttpResponseRedirect("%s%s/change/" % (request.build_absolute_uri(), obj.id))
@@ -31,7 +31,7 @@ class ShopInformationAdmin(admin.ModelAdmin):
             return super(ShopInformationAdmin, self).changelist_view(request, extra_context)
 
     def has_add_permission(self, request):
-        return not self.Meta.model.objects.last() if not DEVELOPMENT else True
+        return not self.Meta.model.objects.last() if not SMART_ADMIN_PANEL else True
 
 
 @admin.register(InvoiceConfiguration)
@@ -42,7 +42,7 @@ class InvoiceConfigurationAdmin(admin.ModelAdmin):
         model = InvoiceConfiguration
 
     def changelist_view(self, request, extra_context=None):
-        if not DEVELOPMENT:
+        if not SMART_ADMIN_PANEL:
             obj = self.Meta.model.objects.last()
             if obj:
                 return HttpResponseRedirect("%s%s/change/" % (request.build_absolute_uri(), obj.id))
@@ -52,7 +52,7 @@ class InvoiceConfigurationAdmin(admin.ModelAdmin):
             return super(InvoiceConfigurationAdmin, self).changelist_view(request, extra_context)
 
     def has_add_permission(self, request):
-        return not self.Meta.model.objects.last() if not DEVELOPMENT else True
+        return not self.Meta.model.objects.last() if not SMART_ADMIN_PANEL else True
 
 
 admin.site.register(InvoicePDFTemplate)
