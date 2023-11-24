@@ -40,13 +40,18 @@ def get_finance_note(invoice):
 
 def get_context(invoice, request) -> dict:
     shop_info = ShopInformation.objects.last()
+    if not shop_info:
+        shop_info = ShopInformation.objects.create()
+
     invoice_total_info = invoice.total_amount_and_qty
-    invoice_conf, created = InvoiceConfiguration.objects.get_or_create()
+    invoice_conf = InvoiceConfiguration.objects.last()
+    if not invoice_conf:invoice_conf = InvoiceConfiguration.objects.create()
+
     shipping_detail = InvoiceShipToDetail.objects.filter(invoice=invoice).last()
     ctx = {
         'shop_info': shop_info,
         'invoice': invoice,
-        'shop_logo_url': request.build_absolute_uri(shop_info.logo_for_invoice.url),
+        'shop_logo_url': request.build_absolute_uri(shop_info.logo_for_invoice.url) if shop_info.logo_for_invoice else '',
         'digital_sig_url': request.build_absolute_uri(shop_info.digital_signature.url) if shop_info.digital_signature else '',
         'payment_qr_url': request.build_absolute_uri(shop_info.payment_qr.url) if shop_info.payment_qr else '',
         'invoice_total_amt': invoice_total_info['total_amt'],   # without discount calculation
