@@ -1,13 +1,13 @@
 
     <div style="margin: 50px 50px 10px 50px;">
-        {% if invoice_conf.show_tax_invoice %}
+        {% if invoice_conf.tax_invoice_or_quotation == "0" %}
             <div class="main-head" style="display: flex; align-items: center;">
                 <div><p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50; font-size: 20px; margin: 0px;"><strong>TAX INVOICE</strong></p></div>
                 {% if invoice_conf.original_for_recipient %}
                     <div style="max-width: 100%; border: 2px solid #a8a5a5; padding: 4px; margin-left: 35px; font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; font-size: 18px; color: #7e7e7e;">ORIGINAL FOR RECIPIENT</div>
                 {% endif %}
             </div>
-        {% elif invoice_conf.show_quotation %}
+        {% elif invoice_conf.tax_invoice_or_quotation == "1" %}
             <div class="main-head" style="display: flex; align-items: center;">
                 <div><p style="font-family:Lucida Sans Unicode,Lucida Grande,sans-serif; color:#2c3e50; font-size: 20px; margin: 0px;"><strong>QUOTATION</strong></p></div>
                 {% if invoice_conf.original_for_recipient %}

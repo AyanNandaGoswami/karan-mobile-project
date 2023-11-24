@@ -14,3 +14,8 @@ DATE_FORMAT = (
     ('format_7', '2004-06-08'),
     ('format_8', '08 Jun, 2004')
 )
+
+TAX_INVOICE_OR_QUOTATION_CHOICE = (
+    ('0', 'TAX INVOICE'),
+    ('1', 'QUOTATION')
+)

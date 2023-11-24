@@ -8,7 +8,7 @@ from ckeditor.fields import RichTextField
 # local import
 from core.model_mixins import TimeStampMixin
 from core.choices import STATUS_CHOICES
-from .choices import UNIQUE_ID_CHOICE, DATE_FORMAT
+from .choices import UNIQUE_ID_CHOICE, DATE_FORMAT, TAX_INVOICE_OR_QUOTATION_CHOICE
 
 User = get_user_model()
 
@@ -87,12 +87,12 @@ class InvoicePDFTemplate(TimeStampMixin):
 
 
 class InvoiceConfiguration(TimeStampMixin):
-    status = models.IntegerField(choices=STATUS_CHOICES, default=1)
+    # status = models.IntegerField(choices=STATUS_CHOICES, default=1)
     show_bank_detail = models.BooleanField(default=False, verbose_name=_('Show bank details on invoices'))
-    show_tax_invoice = models.BooleanField(default=False, verbose_name=_('Show "Tax Invoice" on invoices'))
-    show_quotation = models.BooleanField(default=False, verbose_name=_('Show "Quotation" on invoices'))
+    tax_invoice_or_quotation = models.CharField(max_length=2, choices=TAX_INVOICE_OR_QUOTATION_CHOICE, blank=True, null=True)
+    # show_tax_invoice = models.BooleanField(default=False, verbose_name=_('Show "Tax Invoice" on invoices'))
+    # show_quotation = models.BooleanField(default=False, verbose_name=_('Show "Quotation" on invoices'))
     digital_signature = models.BooleanField(default=False, verbose_name=_('Enable digital signatures on invoices'))
-    show_finance_details = models.BooleanField(default=False, verbose_name=_('Show finance details on invoices'))
     show_qr_code = models.BooleanField(default=False, verbose_name=_('Show QR code on invoice'))
     round_off = models.BooleanField(default=False, verbose_name=_('Enable round-off'))
     original_for_recipient = models.BooleanField(default=False, verbose_name=_('Show "ORIGINAL FOR RECIPIENT"'))

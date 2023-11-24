@@ -19,8 +19,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# local import
+from apps.home.views import IndexView
 
 urlpatterns = [
+    path('', IndexView.as_view()),
     path('admin/', admin.site.urls)
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -32,7 +32,8 @@ def get_finance_note(invoice):
             'advance_emi': int(invoice.advance_emi),
             'margin_money': int(invoice.margin_money),
             'down_payment': int(invoice.dp),
-            'per_month_emi': int(invoice.emi)
+            'per_month_emi': int(invoice.emi),
+            'total_month': int(invoice.total_month)
         }
         return generate_valid_strings(invoice.finance.finance_note, context)
     return None
@@ -71,7 +72,7 @@ def get_context(invoice, request) -> dict:
     if invoice_conf.round_off:
         ctx['round_off'] = round(ctx['invoice_total'] - int(ctx['invoice_total']), 2)
         ctx['invoice_total'] = int(ctx['invoice_total'])
-    ctx['amt_in_words'] = num2words(ctx['invoice_total']).capitalize()
+    ctx['amt_in_words'] = num2words(ctx['invoice_total']).capitalize() if ctx['invoice_total'] else None
     return ctx
 
 
