@@ -26,7 +26,7 @@ class InvoiceShipDetailInline(admin.TabularInline):
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-    search_fields = ('invoice_no', 'sale_date', 'imei_no')
+    search_fields = ('invoice_no', 'sale_date')
     raw_id_fields = ('created_by', 'customer', 'finance')
     readonly_fields = ('invoice_no', 'created_by')
     inlines = [InvoiceItemInline, InvoiceShipDetailInline]
