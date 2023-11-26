@@ -72,7 +72,15 @@ class InvoiceAdmin(admin.ModelAdmin):
 
 admin.site.register(Invoices, InvoiceAdmin)
 
-admin.site.register(Product)
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'p_type', 'available')
+    list_filter = ('p_type', )
+    search_fields = ('name', 'code')
+    search_help_text = "Search by product name or code"
+
+
 admin.site.register(ProductType)
 # admin.site.register(InvoiceItems)
 # admin.site.register(InvoiceShipToDetail)

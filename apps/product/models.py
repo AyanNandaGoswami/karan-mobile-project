@@ -33,6 +33,11 @@ class Product(TimeStampMixin):
     def __str__(self):
         return self.name
 
+    @property
+    def available(self):
+        mapped_dict = {True: 'Yes', False: 'No'}
+        return mapped_dict.get(self.stock_quantity >= 1)
+
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'

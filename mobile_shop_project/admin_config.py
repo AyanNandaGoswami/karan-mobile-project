@@ -9,10 +9,10 @@ JAZZMIN_SETTINGS = {
     "site_brand": "KARAN ENTERPRISE",
 
     # Logo to use for your site, must be present in static files, used for brand on top left
-    "site_logo": None,
+    "site_logo": "logo/logo.jpeg",
 
     # Logo to use for your site, must be present in static files, used for login form logo (defaults to site_logo)
-    "login_logo": None,
+    "login_logo": "logo/resize-logo.jpeg",
 
     # Logo to use for login form in dark themes (defaults to login_logo)
     "login_logo_dark": None,
