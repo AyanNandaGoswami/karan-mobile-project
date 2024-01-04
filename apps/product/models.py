@@ -60,6 +60,7 @@ class Invoices(TimeStampMixin):
     total_month = models.IntegerField(default=0, verbose_name=_('Total months to pay EMI'))
     margin_money = models.IntegerField(default=0, verbose_name=_('Margin Money'))
     advance_emi = models.IntegerField(default=0, verbose_name=_('Advance EMI'))
+    loan_number = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
         return "%s | %s" % (self.invoice_no, self.customer.name)
