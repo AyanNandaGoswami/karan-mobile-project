@@ -49,6 +49,7 @@ class Invoices(TimeStampMixin):
     sale_date = models.DateField(verbose_name=_("Date of sale"), blank=True, null=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name=_('Customer'), help_text=_('Choose one customer'))
     discount = models.IntegerField(default=0, verbose_name=_('Discount(%)'))
+    # invoice_total = models.FloatField(default=0, verbose_name=_('Invoice total'))
     paid_amount = models.IntegerField(default=0, verbose_name=_('Paid amount'))
     ship_to_as_bill_to = models.BooleanField(default=False, verbose_name=_('Ship to same as bill to'))
     customer_signature = models.BooleanField(default=False, verbose_name=_('Show Customer Signature box on invoice'))
@@ -61,6 +62,9 @@ class Invoices(TimeStampMixin):
     margin_money = models.IntegerField(default=0, verbose_name=_('Margin Money'))
     advance_emi = models.IntegerField(default=0, verbose_name=_('Advance EMI'))
     loan_number = models.CharField(max_length=15, blank=True, null=True)
+
+    #
+    trash = models.BooleanField(default=False)
 
     def __str__(self):
         return "%s | %s" % (self.invoice_no, self.customer.name)
@@ -79,6 +83,16 @@ class Invoices(TimeStampMixin):
             total_amt=models.Sum("cost"), total_qty=models.Sum("quantity"), total_tax=models.Sum("taxable_amount"))
 
     @property
+    def invoice_total_amount(self):
+        invoice_total = InvoiceItems.objects.filter(invoice=self).aggregate(total_amt=models.Sum("cost"))['total_amt']
+        invoice_total = invoice_total or 0
+        # apply discount if possible
+        if self.discount:
+            discount = round(invoice_total * (self.discount / 100), 2)
+            invoice_total = invoice_total - discount
+        return invoice_total
+
+    @property
     def formatted_date(self):
         invoice_conf = InvoiceConfiguration.objects.last()
 
@@ -93,6 +107,10 @@ class Invoices(TimeStampMixin):
             'format_8': self.sale_date.strftime("%d %b, %Y"),
         }
         return format_conf.get(invoice_conf.date_format)
+
+    @property
+    def due_amount(self):
+        return 0 if self.finance else int(self.invoice_total_amount - float(self.paid_amount))
 
     class Meta:
         verbose_name = 'Invoice'

@@ -1,7 +1,7 @@
 # django
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.db import transaction
+from django.db import transaction, models
 
 # local import
 from .models import Invoices, InvoiceItems
@@ -36,4 +36,14 @@ def handle_invoiceitem_post_save_signal(sender, instance, created, **kwargs):
         cost = instance.product.unit_price * instance.quantity
         instance.cost = cost
         instance.save()
+
+    # update the total_invoice_price
+    invoice = instance.invoice
+    total_amt = invoice.invoice_items.aggregate(total_amt=models.Sum("cost"))['total_amt']
+    total_amount = total_amt
+    if invoice.discount:
+        discount = round(total_amount * (invoice.discount / 100), 2)
+        total_amount = total_amount - discount
+    invoice.invoice_total = total_amount
+    invoice.save()
 

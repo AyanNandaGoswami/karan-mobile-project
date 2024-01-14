@@ -12,12 +12,13 @@ User = get_user_model()
 
 class Customer(TimeStampMixin):
     added_by = models.ForeignKey(User, on_delete=models.PROTECT, help_text=_('Who added this customer?'), blank=True, null=True)
-    # title = models.CharField(max_length=10, choices=TITLE_CHOICES, blank=True, null=True, verbose_name=_('Title'))
     first_name = models.CharField(max_length=50, verbose_name=_('First name of the customer'))
     middle_name = models.CharField(max_length=50, blank=True, null=True, verbose_name=_('Middle name of the customer'))
     last_name = models.CharField(max_length=50, verbose_name=_('Last name of the customer'))
     email = models.EmailField(blank=True, null=True, verbose_name=_('Email address of the customer'))
     mobile = models.CharField(max_length=12, verbose_name=_('Mobile number of the customer'))
+    alternate_mobile = models.CharField(max_length=12, verbose_name=_('Alternate mobile number of the customer'),
+                                        blank=True, null=True)
     unique_id = models.CharField(max_length=25, blank=True, null=True, verbose_name=_('Customer unique ID'))
 
     # address
