@@ -6,6 +6,7 @@ from django.urls import reverse, path
 from .models import *
 from .admin_actions import generate_invoice_pdf, preview_invoice
 from .admin_forms import InvoiceItemAdminForm
+from .custom_filter import PaymentStatusFilter
 
 
 class InvoiceItemInline(admin.TabularInline):
@@ -29,6 +30,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     search_fields = ('invoice_no', 'sale_date', 'loan_number')
     raw_id_fields = ('created_by', 'customer', 'finance')
     readonly_fields = ('invoice_no', 'created_by')
+    # list_filter = (PaymentStatusFilter, )
     inlines = [InvoiceItemInline, InvoiceShipDetailInline]
 
     def save_model(self, request, obj, form, change):
@@ -37,7 +39,7 @@ class InvoiceAdmin(admin.ModelAdmin):
         obj.save()
 
     def __init__(self, model, admin_site):
-        self.list_display = ['invoice_no', 'customer_name', 'sale_date', 'invoice_view_button', 'invoice_pdf_button']
+        self.list_display = ['invoice_no', 'customer_name', 'sale_date', 'invoice_view_button', 'invoice_pdf_button', 'due_amount']
         super(InvoiceAdmin, self).__init__(model, admin_site)
 
     def invoice_view_button(self, obj):
@@ -47,6 +49,15 @@ class InvoiceAdmin(admin.ModelAdmin):
     def invoice_pdf_button(self, obj):
         return format_html('<a href="{}" style="display: inline-block; padding: 6px 12px; background-color: #36a518; color: #fff; text-decoration: none; border: 1px solid #36a518; border-radius: 5px; text-align: center;">Download</a>',
                            reverse('admin:download-invoice-pdf') + '?ids={}'.format(obj.id))
+
+    def due_amount(self, obj):
+        if obj.due_amount:
+            status_style = 'color: #e74c3c; background-color: #f2dede;'
+        else:
+            status_style = 'color: #d4edda; background-color: #d4edda;'
+
+        return format_html(f'<p style="padding: 8px; border-radius: 4px; {status_style}; text-align: center; '
+                           f'font-weight: bold;">&#8377; {obj.due_amount}</p>')
 
     invoice_pdf_button.short_description = 'Download Invoice'
     invoice_view_button.short_description = 'View Invoice'
