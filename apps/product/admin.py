@@ -39,7 +39,8 @@ class InvoiceAdmin(admin.ModelAdmin):
         obj.save()
 
     def __init__(self, model, admin_site):
-        self.list_display = ['invoice_no', 'customer_name', 'sale_date', 'invoice_view_button', 'invoice_pdf_button', 'due_amount']
+        self.list_display = ['invoice_no', 'customer_name', 'sale_date', 'invoice_view_button', 'invoice_pdf_button',
+                             'due_amount', 'payment_method']
         super(InvoiceAdmin, self).__init__(model, admin_site)
 
     def invoice_view_button(self, obj):

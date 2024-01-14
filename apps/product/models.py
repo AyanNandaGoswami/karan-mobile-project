@@ -112,6 +112,10 @@ class Invoices(TimeStampMixin):
     def due_amount(self):
         return 0 if self.finance else int(self.invoice_total_amount - float(self.paid_amount))
 
+    @property
+    def payment_method(self):
+        return 'Financed' if self.finance else 'Paid'
+
     class Meta:
         verbose_name = 'Invoice'
         verbose_name_plural = 'Invoices'
