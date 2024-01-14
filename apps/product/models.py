@@ -114,7 +114,7 @@ class Invoices(TimeStampMixin):
 
     @property
     def payment_method(self):
-        return 'Financed' if self.finance else 'Paid'
+        return 'Finance' if self.finance else 'Cash'
 
     class Meta:
         verbose_name = 'Invoice'
