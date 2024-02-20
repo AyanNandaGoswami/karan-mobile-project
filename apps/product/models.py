@@ -109,7 +109,7 @@ class Invoices(TimeStampMixin):
         return format_conf.get(invoice_conf.date_format)
 
     @property
-    def due_amount(self):
+    def payment_balance(self):
         return 0 if self.finance else int(self.invoice_total_amount - float(self.paid_amount))
 
     @property

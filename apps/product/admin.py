@@ -40,7 +40,7 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     def __init__(self, model, admin_site):
         self.list_display = ['invoice_no', 'customer_name', 'sale_date', 'invoice_view_button', 'invoice_pdf_button',
-                             'due_amount', 'payment_method']
+                             'payment_balance', 'payment_method']
         super(InvoiceAdmin, self).__init__(model, admin_site)
 
     def invoice_view_button(self, obj):
@@ -51,14 +51,16 @@ class InvoiceAdmin(admin.ModelAdmin):
         return format_html('<a href="{}" style="display: inline-block; padding: 6px 12px; background-color: #36a518; color: #fff; text-decoration: none; border: 1px solid #36a518; border-radius: 5px; text-align: center;">Download</a>',
                            reverse('admin:download-invoice-pdf') + '?ids={}'.format(obj.id))
 
-    def due_amount(self, obj):
-        if obj.due_amount:
-            status_style = 'color: #e74c3c; background-color: #f2dede;'
+    def payment_balance(self, obj):
+        if obj.payment_balance > 0:
+            status_style = 'color: #e74c3c; background-color: #dbb4b4;'
+        elif obj.payment_balance < 0:
+            status_style = 'color: #e19304; background-color: #eed6aa;'
         else:
-            status_style = 'color: #d4edda; background-color: #d4edda;'
+            status_style = 'color: #a9dfbf; background-color: #a9dfbf;'  # Orange color for the else condition
 
         return format_html(f'<p style="padding: 8px; border-radius: 4px; {status_style}; text-align: center; '
-                           f'font-weight: bold;">&#8377; {obj.due_amount}</p>')
+                           f'font-weight: bold;">&#8377; {abs(obj.payment_balance)}</p>')
 
     invoice_pdf_button.short_description = 'Download Invoice'
     invoice_view_button.short_description = 'View Invoice'
