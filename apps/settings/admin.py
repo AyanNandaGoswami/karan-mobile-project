@@ -4,7 +4,9 @@ from django.http import HttpResponseRedirect
 
 # local import
 from .models import *
-from mobile_shop_project.settings import SMART_ADMIN_PANEL
+# from mobile_shop_project.settings import SMART_ADMIN_PANEL
+
+SMART_ADMIN_PANEL = True
 
 
 @admin.register(UniqueIdConfig)
