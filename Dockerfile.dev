@@ -1,22 +1,36 @@
-FROM python:3.10.6-alpine
+# Use slim Python image (Debian-based for easier package management)
+FROM python:3.10-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app/
 
-# Copy the project files to the working directory
-COPY . .
+# Install system dependencies including wkhtmltopdf
+RUN apt-get update && apt-get install -y \
+    wkhtmltopdf \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create and activate virtualenv
-RUN python -m venv venv
-RUN . venv/bin/activate
+# Create and activate virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Install dependencies
+# Install Python dependencies
+COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Expose the container's port (change this if your Django project uses a different port)
+# Copy the project files
+COPY . .
+
+# Expose port
 EXPOSE 8005
+
