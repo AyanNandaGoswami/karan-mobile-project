@@ -97,6 +97,7 @@ class InvoiceConfiguration(TimeStampMixin):
     round_off = models.BooleanField(default=False, verbose_name=_('Enable round-off'))
     original_for_recipient = models.BooleanField(default=False, verbose_name=_('Show "ORIGINAL FOR RECIPIENT"'))
     date_format = models.CharField(choices=DATE_FORMAT, default='format_1', max_length=12)
+    pdf_scale = models.FloatField(default=0.7, help_text=_('PDF Scale only for playwright'))
 
     def __str__(self):
         return str(self.id)
@@ -104,4 +105,3 @@ class InvoiceConfiguration(TimeStampMixin):
     class Meta:
         verbose_name = 'Invoice Configuration'
         verbose_name_plural = 'Invoice Configurations'
-

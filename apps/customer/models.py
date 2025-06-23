@@ -50,4 +50,3 @@ class Customer(TimeStampMixin):
     class Meta:
         verbose_name = _('Customer')
         verbose_name_plural = _('Customers')
-

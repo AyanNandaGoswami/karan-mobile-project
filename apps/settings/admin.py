@@ -20,18 +20,18 @@ class ShopInformationAdmin(admin.ModelAdmin):
     class Meta:
         model = ShopInformation
 
-    def changelist_view(self, request, extra_context=None):
-        if SMART_ADMIN_PANEL:
-            obj = self.Meta.model.objects.last()
-            if obj:
-                return HttpResponseRedirect("%s%s/change/" % (request.build_absolute_uri(), obj.id))
-            else:
-                return super(ShopInformationAdmin, self).changelist_view(request, extra_context)
-        else:
-            return super(ShopInformationAdmin, self).changelist_view(request, extra_context)
+    # def changelist_view(self, request, extra_context=None):
+    #     if SMART_ADMIN_PANEL:
+    #         obj = self.Meta.model.objects.last()
+    #         if obj:
+    #             return HttpResponseRedirect("%s%s/change/" % (request.build_absolute_uri(), obj.id))
+    #         else:
+    #             return super(ShopInformationAdmin, self).changelist_view(request, extra_context)
+    #     else:
+    #         return super(ShopInformationAdmin, self).changelist_view(request, extra_context)
 
-    def has_add_permission(self, request):
-        return not self.Meta.model.objects.last() if SMART_ADMIN_PANEL else True
+    # def has_add_permission(self, request):
+    #     return not self.Meta.model.objects.last() if SMART_ADMIN_PANEL else True
 
 
 @admin.register(InvoiceConfiguration)

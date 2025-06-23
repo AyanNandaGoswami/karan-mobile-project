@@ -4,9 +4,8 @@ from django.urls import reverse, path
 
 # local import
 from .models import *
-from .admin_actions import generate_invoice_pdf, preview_invoice
+from .admin_actions import generate_invoice_pdf_response, preview_invoice
 from .admin_forms import InvoiceItemAdminForm
-from .custom_filter import PaymentStatusFilter
 
 
 class InvoiceItemInline(admin.TabularInline):
@@ -81,7 +80,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     def download_invoice_pdf_view(self, request):
         ids = request.GET.getlist('ids')
         queryset = self.get_queryset(request).filter(id__in=ids)
-        return generate_invoice_pdf(self, request, queryset)
+        return generate_invoice_pdf_response(self, request, queryset)
 
 
 admin.site.register(Invoices, InvoiceAdmin)

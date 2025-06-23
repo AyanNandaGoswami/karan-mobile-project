@@ -1,25 +1,25 @@
 # django
 from django.http import HttpResponse
-from django.template.loader import render_to_string
 from django.template import Context, Template
 
 # third party
 import pdfkit
 from num2words import num2words
+from playwright.sync_api import sync_playwright
 
 # local import
-from django.conf import settings
 from apps.settings.models import InvoicePDFTemplate, ShopInformation, InvoiceConfiguration
 from .models import InvoiceShipToDetail
+from mobile_shop_project.settings import USE_PLAYWRIGHT_FOR_PDF
 
 
 def generate_valid_strings(plain_text, context):
-    '''
+    """
     This function is to bind the plain text with their respective variable..{{var}}
     Example:
         input: <p>Hey {{ user_account.first_name }}, welcome!</p>
         output: <p>Hey Brett, welcome!</p>
-    '''
+    """
     template = Template(plain_text)
     context = Context(context)
     generated_string = template.render(context)
@@ -40,14 +40,9 @@ def get_finance_note(invoice):
 
 
 def get_context(invoice, request) -> dict:
-    shop_info = ShopInformation.objects.last()
-    if not shop_info:
-        shop_info = ShopInformation.objects.create()
-
+    shop_info = invoice.store or ShopInformation.objects.last() or ShopInformation.objects.create()
     invoice_total_info = invoice.total_amount_and_qty
-    invoice_conf = InvoiceConfiguration.objects.last()
-    if not invoice_conf:invoice_conf = InvoiceConfiguration.objects.create()
-
+    invoice_conf = InvoiceConfiguration.objects.last() or InvoiceConfiguration.objects.create()
     shipping_detail = InvoiceShipToDetail.objects.filter(invoice=invoice).last()
     ctx = {
         'shop_info': shop_info,
@@ -76,8 +71,11 @@ def get_context(invoice, request) -> dict:
     return ctx
 
 
-def generate_invoice_pdf(modeladmin, request, queryset):
-    # Optional configuration options for pdfkit
+# Legacy method using pdfkit + wkhtmltopdf
+# Works on Linux/Mac but often has issues on Windows due to wkhtmltopdf path/config problems, and it does not support
+# modern CSS on windows
+def generate_invoice_pdf_using_pdfkit(modeladmin, request, queryset):
+    # PDF rendering options
     options = {
         'page-size': 'Letter',
         'margin-top': '0mm',
@@ -91,11 +89,48 @@ def generate_invoice_pdf(modeladmin, request, queryset):
     template_config = InvoicePDFTemplate.objects.last()
     html_content = generate_valid_strings(template_config.template, context)
 
-    # Use pdfkit to convert the HTML content to PDF
-    pdf_content = pdfkit.from_string(html_content, False, options=options)
+    try:
+        # Convert HTML to PDF using pdfkit (requires wkhtmltopdf installed and on PATH)
+        pdf_content = pdfkit.from_string(html_content, False, options=options)
 
+        response = HttpResponse(pdf_content, content_type='application/pdf')
+        response['Content-Disposition'] = (
+            f'attachment; filename="{invoice.customer.name}_{invoice.invoice_no}.pdf"'
+        )
+        return response
+
+    except OSError as e:
+        # If wkhtmltopdf is not available or fails, return an error
+        return HttpResponse(f"PDF generation failed: {str(e)}", status=500)
+
+
+def generate_invoice_pdf_using_playwright(modeladmin, request, queryset):
+    invoice = queryset.last()
+    context = get_context(invoice, request)
+    template_config = InvoicePDFTemplate.objects.last()
+    html_content = generate_valid_strings(template_config.template, context)
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+
+        # Set page content to the generated HTML
+        page.set_content(html_content, wait_until="networkidle")
+
+        # Generate the PDF in memory (don't save to disk)
+        pdf_content = page.pdf(
+            format="Letter",
+            scale=context['invoice_conf'].pdf_scale if context['invoice_conf'] else 0.7,
+            print_background=True
+        )
+
+        browser.close()
+
+    # Return the PDF as an HTTP response
     response = HttpResponse(pdf_content, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment;' + f'filename={invoice.customer.name}_{invoice.invoice_no}.pdf'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{invoice.customer.name}_{invoice.invoice_no}.pdf"'
+    )
 
     return response
 
@@ -108,5 +143,16 @@ def preview_invoice(modeladmin, request, queryset):
     return HttpResponse(html_content)
 
 
+def generate_invoice_pdf_response(modeladmin, request, queryset):
+    """
+    main selector function to generate invoice PDF
+    chooses between Playwright and PDFKit depending on configuration
+    """
+    if USE_PLAYWRIGHT_FOR_PDF:
+        return generate_invoice_pdf_using_playwright(modeladmin, request, queryset)
+    else:
+        return generate_invoice_pdf_using_pdfkit(modeladmin, request, queryset)
+
+
 preview_invoice.short_description = 'View Invoice'
-generate_invoice_pdf.short_description = 'Download pdf for selected invoice'
+generate_invoice_pdf_response.short_description = 'Download pdf for selected invoice'

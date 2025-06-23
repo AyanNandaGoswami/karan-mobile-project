@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 from core.model_mixins import TimeStampMixin
 from apps.customer.models import Customer
 from apps.master.models import Finance, Village
-from apps.settings.models import InvoiceConfiguration
+from apps.settings.models import InvoiceConfiguration, ShopInformation
 
 User = get_user_model()
 
@@ -65,6 +65,7 @@ class Invoices(TimeStampMixin):
 
     #
     trash = models.BooleanField(default=False)
+    store = models.ForeignKey(ShopInformation, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return "%s | %s" % (self.invoice_no, self.customer.name)
